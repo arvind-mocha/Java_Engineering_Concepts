@@ -3,6 +3,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadExamples {
     public static void threadExample() throws InterruptedException {
@@ -156,6 +157,26 @@ public class ThreadExamples {
         System.out.println("Expected: " + 200_000);
         System.out.println("Actual with volatile count++: " + counter.count);
         System.out.println("Updates can be lost; the result varies and may be correct by chance.");
+    }
+
+    public static void atomicCounterExample() throws InterruptedException {
+        AtomicInteger counter = new AtomicInteger(0);
+        Runnable task = () -> {
+            for (int i = 0; i < 100_000; i++) {
+                counter.incrementAndGet(); // Atomic increment: no updates are lost.
+            }
+        };
+
+        // Both threads increment the same AtomicInteger.
+        Thread first = new Thread(task);
+        Thread second = new Thread(task);
+        first.start();
+        second.start();
+        first.join();
+        second.join();
+
+        System.out.println("Expected: " + 200_000);
+        System.out.println("Actual with AtomicInteger: " + counter.get());
     }
 
     private static class VolatileCounter {
