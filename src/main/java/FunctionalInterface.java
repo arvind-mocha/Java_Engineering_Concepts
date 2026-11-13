@@ -1,4 +1,5 @@
 import Models.Student;
+import interfaces.MyFunction;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -6,6 +7,18 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class FunctionalInterface {
+    public static void customFunctionExample() {
+        // Our interface declares R first, then T: Integer result, String input.
+        // R apply(T input) becomes Integer apply(String input).
+        MyFunction<Integer, String> getLength = text -> text.length();
+        Integer length = getLength.apply("Hello");
+        System.out.println("Length from lambda: " + length); // 5
+
+        // A method reference provides the same implementation of apply().
+        MyFunction<Integer, String> getLengthReference = String::length;
+        System.out.println("Length from method reference: " + getLengthReference.apply("Hello")); // 5
+    }
+
     public static void supplierExample() {
         // Supplier takes no input and returns a value through get().
         Supplier<Student> createStudent = () -> new Student("Zoe", 20);

@@ -44,6 +44,9 @@ public class Main {
         System.out.println("\n=== Function ===");
         FunctionalInterface.functionExample();
 
+        System.out.println("\n=== Custom MyFunction<R, T> ===");
+        FunctionalInterface.customFunctionExample();
+
         System.out.println("\n=== Consumer ===");
         FunctionalInterface.consumerExample();
 
