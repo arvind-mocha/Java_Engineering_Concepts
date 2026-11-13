@@ -1,4 +1,6 @@
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -327,5 +329,42 @@ public class ThreadExamples {
         }
 
         task.run(); // Main tries after releasing the lock: this attempt succeeds.
+    }
+
+    public static void completableFutureExample() {
+        System.out.println("Synchronous: main runs one task after the other.");
+        long start = System.nanoTime();
+        String price = slowTask("Price");
+        String stock = slowTask("Stock");
+        System.out.println(price + ", " + stock);
+        System.out.println("Sync time: " + (System.nanoTime() - start) / 1_000_000 + " ms");
+
+        System.out.println("\nAsynchronous: submit both tasks to two worker threads.");
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        try {
+            start = System.nanoTime();
+            CompletableFuture<String> priceFuture =
+                    CompletableFuture.supplyAsync(() -> slowTask("Price"), executor);
+            CompletableFuture<String> stockFuture =
+                    CompletableFuture.supplyAsync(() -> slowTask("Stock"), executor);
+
+            System.out.println("Main can do other work while the tasks run.");
+            // Both tasks are already submitted. join() blocks main until results are ready.
+            System.out.println(priceFuture.join() + ", " + stockFuture.join());
+            System.out.println("Async time: " + (System.nanoTime() - start) / 1_000_000 + " ms");
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    private static String slowTask(String name) {
+        System.out.println(name + " task running on " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(300); // Simulate a slow request, such as fetching price or stock.
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new CompletionException(e);
+        }
+        return name + " ready";
     }
 }

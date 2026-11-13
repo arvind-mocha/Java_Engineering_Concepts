@@ -74,20 +74,29 @@ public class Main {
 //
 //        System.out.println("\n=== Atomic Counter ===");
 //        ThreadExamples.atomicCounterExample();
+//
+//        System.out.println("\n=== Deadlock ===");
+//        ThreadExamples.deadlockExample();
+//
+//        System.out.println("\n=== Prevent Deadlock ===");
+//        ThreadExamples.preventDeadlockExample();
+//
+//        System.out.println("\n=== Fair ReentrantLock ===");
+//        ThreadExamples.fairReentrantLockExample();
+//
+//        System.out.println("\n=== Thread Priority ===");
+//        ThreadExamples.threadPriorityExample();
+//
+//        System.out.println("\n=== tryLock ===");
+//        ThreadExamples.tryLockExample();
 
-        System.out.println("\n=== Deadlock ===");
-        ThreadExamples.deadlockExample();
+        System.out.println("\n=== Thread Safety ===");
+        ThreadSafety.threadSafetyExample();
 
-        System.out.println("\n=== Prevent Deadlock ===");
-        ThreadExamples.preventDeadlockExample();
+        System.out.println("\n=== HashMap vs ConcurrentHashMap ===");
+        ThreadSafety.hashMapVsConcurrentHashMapExample();
 
-        System.out.println("\n=== Fair ReentrantLock ===");
-        ThreadExamples.fairReentrantLockExample();
-
-        System.out.println("\n=== Thread Priority ===");
-        ThreadExamples.threadPriorityExample();
-
-        System.out.println("\n=== tryLock ===");
-        ThreadExamples.tryLockExample();
+        System.out.println("\n=== Synchronous vs Asynchronous ===");
+        ThreadExamples.completableFutureExample();
     }
 }
