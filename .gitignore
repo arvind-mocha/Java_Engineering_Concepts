@@ -1,0 +1,27 @@
+# Gradle and Java generated files
+.gradle/
+build/
+out/
+bin/
+*.class
+.kotlin/
+
+# IDE settings
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.factorypath
+.apt_generated/
+.vscode/
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Operating system files
+.DS_Store
