@@ -34,5 +34,23 @@ public class Main {
 
         System.out.println("\n=== Comparator ===");
         CollectionFramework.comparatorExample();
+
+        System.out.println("\n=== Lambda Comparator ===");
+        LambdaExamples.comparatorLambdaExample();
+
+        System.out.println("\n=== Predicate ===");
+        FunctionalInterface.predicateExample();
+
+        System.out.println("\n=== Function ===");
+        FunctionalInterface.functionExample();
+
+        System.out.println("\n=== Consumer ===");
+        FunctionalInterface.consumerExample();
+
+        System.out.println("\n=== Supplier ===");
+        FunctionalInterface.supplierExample();
+
+        System.out.println("\n=== Streams ===");
+        StreamExamples.streamExamples();
     }
 }
