@@ -80,5 +80,14 @@ public class Main {
 
         System.out.println("\n=== Prevent Deadlock ===");
         ThreadExamples.preventDeadlockExample();
+
+        System.out.println("\n=== Fair ReentrantLock ===");
+        ThreadExamples.fairReentrantLockExample();
+
+        System.out.println("\n=== Thread Priority ===");
+        ThreadExamples.threadPriorityExample();
+
+        System.out.println("\n=== tryLock ===");
+        ThreadExamples.tryLockExample();
     }
 }

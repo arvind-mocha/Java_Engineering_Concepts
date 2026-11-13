@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadExamples {
     public static void threadExample() throws InterruptedException {
@@ -252,5 +253,79 @@ public class ThreadExamples {
         first.join();
         second.join();
         System.out.println("Both threads finished without deadlock.");
+    }
+
+    public static void fairReentrantLockExample() throws InterruptedException {
+        ReentrantLock lock = new ReentrantLock(true); // true enables fairness.
+        Runnable task = () -> {
+            for (int i = 1; i <= 3; i++) {
+                lock.lock(); // Under contention, favors the longest-waiting thread.
+                try {
+                    System.out.println(Thread.currentThread().getName() + " holds the lock, round " + i);
+                    Thread.sleep(20); // Demo only: give the other thread time to queue.
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                } finally {
+                    lock.unlock(); // Always release the lock, even if the task fails.
+                }
+            }
+        };
+
+        Thread first = new Thread(task, "First");
+        Thread second = new Thread(task, "Second");
+        first.start();
+        second.start();
+        first.join();
+        second.join();
+        // Fairness concerns waiting threads, not start order or guaranteed alternation.
+        // Reentrant means the owning thread can acquire this lock again (and must unlock again).
+    }
+
+    public static void threadPriorityExample() throws InterruptedException {
+        Runnable task = () -> {
+            Thread current = Thread.currentThread();
+            for (int i = 1; i <= 3; i++) {
+                System.out.println(current.getName() + " (priority " + current.getPriority() + "): " + i);
+            }
+        };
+
+        Thread low = new Thread(task, "Low priority");
+        Thread high = new Thread(task, "High priority");
+        low.setPriority(Thread.MIN_PRIORITY); // 1; default priority is usually 5.
+        high.setPriority(Thread.MAX_PRIORITY); // 10.
+
+        low.start();
+        high.start();
+        low.join();
+        high.join();
+        System.out.println("Priority is a scheduling hint; high priority is NOT guaranteed to run first.");
+        // The JVM/OS may ignore priorities. Use coordination when execution order matters.
+    }
+
+    public static void tryLockExample() throws InterruptedException {
+        ReentrantLock lock = new ReentrantLock();
+        Runnable task = () -> {
+            if (lock.tryLock()) { // Returns immediately: true if I acquired, false if busy.
+                try {
+                    System.out.println(Thread.currentThread().getName() + ": acquired the lock.");
+                } finally {
+                    lock.unlock(); // Unlock only if this thread acquired it.
+                }
+            } else {
+                System.out.println(Thread.currentThread().getName() + ": lock busy, doing other work.");
+            }
+        };
+
+        lock.lock(); // Main holds the lock so the worker's attempt will fail.
+        try {
+            Thread worker = new Thread(task, "Worker");
+            worker.start();
+            worker.join(); // Safe here because tryLock() doesn't wait for main's lock.
+        } finally {
+            lock.unlock();
+        }
+
+        task.run(); // Main tries after releasing the lock: this attempt succeeds.
     }
 }
