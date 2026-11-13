@@ -1,4 +1,5 @@
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -188,5 +189,68 @@ public class ThreadExamples {
             count++;
             // Use synchronized on this method or AtomicInteger.incrementAndGet() to fix it.
         }
+    }
+
+    // -------------------------- DEADLOCK ---------------------------------------
+
+    public static void deadlockExample() throws InterruptedException {
+        Object lockA = new Object();
+        Object lockB = new Object();
+        CountDownLatch bothLocked = new CountDownLatch(2);
+
+        Thread first = deadlockingThread("First", lockA, lockB, bothLocked);
+        Thread second = deadlockingThread("Second", lockB, lockA, bothLocked);
+        first.start();
+        second.start();
+
+        while (first.getState() != Thread.State.BLOCKED
+                || second.getState() != Thread.State.BLOCKED) {
+            Thread.sleep(10);
+        }
+        System.out.println("Deadlock: First holds A and waits for B; Second holds B and waits for A.");
+        // Do not join(): neither thread can finish. Always use the same lock order to prevent this.
+    }
+
+    private static Thread deadlockingThread(String name, Object firstLock, Object secondLock,
+                                            CountDownLatch bothLocked) {
+        Thread thread = new Thread(() -> {
+            synchronized (firstLock) {
+                System.out.println(name + " acquired its first lock.");
+                bothLocked.countDown();
+                try {
+                    bothLocked.await(); // Both threads hold their first lock before proceeding.
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                synchronized (secondLock) { // Each waits for the lock held by the other.
+                    System.out.println(name + " acquired both locks."); // Never reached.
+                }
+            }
+        }, name);
+        thread.setDaemon(true); // Allows JVM exit; the deadlock itself remains unresolved.
+        return thread;
+    }
+
+    public static void preventDeadlockExample() throws InterruptedException {
+        Object lockA = new Object();
+        Object lockB = new Object();
+
+        Runnable task = () -> {
+            // Both threads acquire A first, then B: no circular waiting.
+            synchronized (lockA) {
+                synchronized (lockB) {
+                    System.out.println(Thread.currentThread().getName() + " acquired both locks.");
+                }
+            } // Both locks are released when their synchronized blocks end.
+        };
+
+        Thread first = new Thread(task, "First");
+        Thread second = new Thread(task, "Second");
+        first.start();
+        second.start();
+        first.join();
+        second.join();
+        System.out.println("Both threads finished without deadlock.");
     }
 }

@@ -71,8 +71,14 @@ public class Main {
 //
 //        System.out.println("\n=== Volatile Counter: Lost Updates ===");
 //        ThreadExamples.volatileCounterExample();
+//
+//        System.out.println("\n=== Atomic Counter ===");
+//        ThreadExamples.atomicCounterExample();
 
-        System.out.println("\n=== Atomic Counter ===");
-        ThreadExamples.atomicCounterExample();
+        System.out.println("\n=== Deadlock ===");
+        ThreadExamples.deadlockExample();
+
+        System.out.println("\n=== Prevent Deadlock ===");
+        ThreadExamples.preventDeadlockExample();
     }
 }
