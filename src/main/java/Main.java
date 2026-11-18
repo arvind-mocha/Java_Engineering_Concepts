@@ -2,6 +2,9 @@ import java.util.concurrent.ExecutionException;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
+        System.out.println("\n=== Data Structures ===");
+        DataStructures.invokeDS();
+
 //        System.out.println("\n=== Inheritance ===");
 //        Oops.Inheritance();
 //
@@ -89,14 +92,14 @@ public class Main {
 //
 //        System.out.println("\n=== tryLock ===");
 //        ThreadExamples.tryLockExample();
-
-        System.out.println("\n=== Thread Safety ===");
-        ThreadSafety.threadSafetyExample();
-
-        System.out.println("\n=== HashMap vs ConcurrentHashMap ===");
-        ThreadSafety.hashMapVsConcurrentHashMapExample();
-
-        System.out.println("\n=== Synchronous vs Asynchronous ===");
-        ThreadExamples.completableFutureExample();
+//
+//        System.out.println("\n=== Thread Safety ===");
+//        ThreadSafety.threadSafetyExample();
+//
+//        System.out.println("\n=== HashMap vs ConcurrentHashMap ===");
+//        ThreadSafety.hashMapVsConcurrentHashMapExample();
+//
+//        System.out.println("\n=== Synchronous vs Asynchronous ===");
+//        ThreadExamples.completableFutureExample();
     }
 }
