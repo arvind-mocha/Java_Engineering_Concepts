@@ -1,5 +1,4 @@
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class ProblemSolving {
     public static void invokeProblems() {
@@ -7,7 +6,7 @@ public class ProblemSolving {
         // countOccurrencesExample();
         // reverseArrayExample();
         // isSortedExample();
-         // moveZerosExample();
+        // moveZerosExample();
         // rotateRightExample();
         // removeDuplicatesExample();
         // containsDuplicateExample();
@@ -17,7 +16,109 @@ public class ProblemSolving {
         // transposeMatrixExample();
         // rotateMatrixClockwiseExample();
         // boundarySumExample();
-        spiralOrderExample();
+        // spiralOrderExample();
+        // countFrequenciesExample();
+        // firstUniqueIndexExample();
+        twoSumExample();
+    }
+
+    public static void twoSumExample() {
+        int[] numbers = {2, 7, 11, 15};
+        int target = 9;
+        System.out.println("Two Sum indices: " + Arrays.toString(twoSum(numbers, target)));
+        // Expected output: Two Sum indices: [0, 1] (or [1, 0])
+        // numbers[0] + numbers[1] = 2 + 7 = 9
+    }
+
+    /**
+     * Problem 19: Return two distinct indices whose values add up to target.
+     * Return an int[] containing those two indices, in either order.
+     * If several pairs work, return any valid pair. If none work, return new int[0].
+     * You cannot use the same index twice, but equal values at different indices
+     * are allowed. The array is not necessarily sorted.
+     * Use loops and a HashMap. Aim for O(n) expected time and O(n) extra space.
+     * Do not modify the input or use sorting or streams.
+     * Assume numbers is non-null and all values and target are between
+     * -1_000_000 and 1_000_000 (so int arithmetic is sufficient).
+     * Examples:
+     * [2, 7, 11, 15], target 9 -> [0, 1]
+     * [3, 3], target 6 -> [0, 1]
+     * [1, 2], target 8 -> []
+     */
+    public static int[] twoSum(int[] numbers, int target) {
+        for(int i=0; i<numbers.length;i++){
+            for(int j=i+1;j<numbers.length;j++){
+                if(numbers[i] + numbers[j] == target){
+                    return new int[]{i,j};
+                }
+            }
+        }
+
+        return new int[]{};
+    }
+
+    public static void firstUniqueIndexExample() {
+        int[] numbers = {4, 1, 4, 2, 1, 7};
+        System.out.println("First unique index: " + firstUniqueIndex(numbers));
+        // Expected output: First unique index: 3 (the value at index 3 is 2)
+    }
+
+    /**
+     * Problem 18: Return the index of the first element that appears exactly once.
+     * "First" means the smallest index in the original array, not the smallest value.
+     * Return -1 if no element appears exactly once, including for an empty array.
+     * Use loops and a HashMap. You may reuse countFrequencies().
+     * Do not modify the input or use sorting or streams.
+     * Aim for O(n) expected time and O(k) extra space, where k is the number
+     * of distinct values. Assume numbers is non-null.
+     * Examples:
+     * [4, 1, 4, 2, 1, 7] -> 3 (value 2)
+     * [9, 1, 4] -> 0 (value 9)
+     * [5, 5] -> -1
+     * [] -> -1
+     */
+    public static int firstUniqueIndex(int[] numbers) {
+        HashMap<Integer, Integer> map = new LinkedHashMap<>();
+        for (int val : numbers) {
+            map.merge(val, 1, Integer::sum);
+        }
+        for (int i = 0; i < numbers.length; i++) {
+            if (map.get(numbers[i]) == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static void countFrequenciesExample() {
+        int[] numbers = {4, 1, 4, 2, 1, 4};
+        System.out.println("Frequencies: " + countFrequencies(numbers));
+        // Expected entries: 4=3, 1=2, 2=1
+        // HashMap iteration/printing order is not guaranteed.
+    }
+
+    /**
+     * Problem 17: Return a map from each distinct number to its occurrence count.
+     * Keys are array values; values are how many times each appears.
+     * Use a loop and a java.util.HashMap<Integer, Integer>.
+     * You may add import java.util.HashMap; to use it.
+     * Useful Map methods to explore: put(), get(), getOrDefault().
+     * Do not modify the array or use streams or sorting.
+     * Aim for O(n) expected time and O(k) space, where k is the number
+     * of distinct values. The map's entry order does not matter.
+     * Assume numbers is non-null. An empty array returns an empty map.
+     * Each invocation must compute counts only for its own input.
+     * Examples:
+     * [4, 1, 4, 2, 1, 4] -> {4=3, 1=2, 2=1}
+     * [5, 5] -> {5=2}
+     * [] -> {}
+     */
+    public static Map<Integer, Integer> countFrequencies(int[] numbers) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int val : numbers) {
+            map.merge(val, 1, Integer::sum);
+        }
+        return map;
     }
 
     public static void spiralOrderExample() {
@@ -48,8 +149,48 @@ public class ProblemSolving {
      * [] -> []
      */
     public static List<Integer> spiralOrder(int[][] matrix) {
-        // TODO: Write your solution here.
-        throw new UnsupportedOperationException("Implement spiralOrder");
+        List<Integer> result = new ArrayList<>();
+
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return result;
+        }
+
+        int top = 0;
+        int bottom = matrix.length - 1;
+        int left = 0;
+        int right = matrix[0].length - 1;
+
+        while (top <= bottom && left <= right) {
+            // Move right across the top row.
+            for (int column = left; column <= right; column++) {
+                result.add(matrix[top][column]);
+            }
+            top++;
+
+            // Move down the right column.
+            for (int row = top; row <= bottom; row++) {
+                result.add(matrix[row][right]);
+            }
+            right--;
+
+            // Move left across the bottom row, if one remains.
+            if (top <= bottom) {
+                for (int column = right; column >= left; column--) {
+                    result.add(matrix[bottom][column]);
+                }
+                bottom--;
+            }
+
+            // Move up the left column, if one remains.
+            if (left <= right) {
+                for (int row = bottom; row >= top; row--) {
+                    result.add(matrix[row][left]);
+                }
+                left++;
+            }
+        }
+
+        return result;
     }
 
     public static void boundarySumExample() {
@@ -137,21 +278,21 @@ public class ProblemSolving {
      */
     public static void rotateMatrixClockwise(int[][] matrix) {
         int size = matrix.length;
-        for(int i=0; i<size;i++){
-            for(int j=i+1;j<size;j++){
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
                 int swap = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = swap;
             }
         }
 
-        for(int[] row :matrix){
-            int len = row.length-1;
-            for (int i = 0; i<row.length/2; i++){
+        for (int[] row : matrix) {
+            int len = row.length - 1;
+            for (int i = 0; i < row.length / 2; i++) {
                 int swap = row[i];
                 row[i] = row[len];
                 row[len] = swap;
-                len --;
+                len--;
             }
         }
     }
@@ -187,8 +328,8 @@ public class ProblemSolving {
      */
     public static void transposeMatrix(int[][] matrix) {
         int size = matrix.length;
-        for(int i=0; i<size; i++){
-            for(int j=i+1; j<size; j++){
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
                 int swapRow = matrix[i][j];
                 matrix[i][j] = matrix[j][i];
                 matrix[j][i] = swapRow;
@@ -221,9 +362,9 @@ public class ProblemSolving {
     public static boolean isDiagonalMatrix(int[][] matrix) {
         int size = matrix.length;
 
-        for(int i=0; i<size;i++){
-            for(int j=0; j<size; j++){
-                if((i != j && matrix[i][j] != 0)){
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if ((i != j && matrix[i][j] != 0)) {
                     return false;
                 }
             }
@@ -260,9 +401,9 @@ public class ProblemSolving {
     public static int secondaryDiagonalSum(int[][] matrix) {
         int sum = 0;
         int counter = 0;
-        for(int i=matrix.length-1; i>=0; i--){
+        for (int i = matrix.length - 1; i >= 0; i--) {
             sum = sum + matrix[i][counter];
-            counter ++;
+            counter++;
         }
         return sum;
     }
@@ -296,10 +437,10 @@ public class ProblemSolving {
         // TODO: Write your solution here.
         int size = matrix.length;
         int sum = 0;
-       for(int i=0; i<size;i++){
-           sum = sum+matrix[i][i];
-       }
-       return sum;
+        for (int i = 0; i < size; i++) {
+            sum = sum + matrix[i][i];
+        }
+        return sum;
     }
 
     public static void containsDuplicateExample() {
@@ -321,11 +462,11 @@ public class ProblemSolving {
      * [] -> false
      */
     public static boolean containsDuplicate(int[] numbers) {
-        if(numbers.length < 2) return false;
+        if (numbers.length < 2) return false;
 
         HashSet<Integer> hashset = new HashSet<>();
-        for(int i=0; i<numbers.length;i++){
-            if(hashset.contains(numbers[i])) return true;
+        for (int i = 0; i < numbers.length; i++) {
+            if (hashset.contains(numbers[i])) return true;
             hashset.add(numbers[i]);
         }
         return false;
@@ -359,12 +500,12 @@ public class ProblemSolving {
      * [] -> return 0
      */
     public static int removeDuplicates(int[] numbers) {
-        if(numbers.length == 0) return 0;
+        if (numbers.length == 0) return 0;
 
         int count = 1;
         int val = numbers[0];
-        for(int i=1; i<numbers.length;i++){
-            if(numbers[i] != val){
+        for (int i = 1; i < numbers.length; i++) {
+            if (numbers[i] != val) {
                 val = numbers[i];
                 numbers[count] = val;
                 count++;
@@ -394,10 +535,10 @@ public class ProblemSolving {
      * [] -> []
      */
     public static void rotateRight(int[] numbers) {
-        if(numbers.length < 2) return;
-        int last = numbers[numbers.length-1];
-        for(int i=numbers.length-2; i>=0;i--){
-            numbers[i+1] = numbers[i];
+        if (numbers.length < 2) return;
+        int last = numbers[numbers.length - 1];
+        for (int i = numbers.length - 2; i >= 0; i--) {
+            numbers[i + 1] = numbers[i];
         }
         numbers[0] = last;
     }
@@ -423,13 +564,13 @@ public class ProblemSolving {
      */
     public static void moveZeros(int[] numbers) {
         int destinationLocation = 0;
-        for(int i=0; i<numbers.length;i++){
-            if(numbers[i] != 0){
-                if(i != destinationLocation){
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] != 0) {
+                if (i != destinationLocation) {
                     numbers[destinationLocation] = numbers[i];
                     numbers[i] = 0;
                 }
-                destinationLocation ++;
+                destinationLocation++;
             }
         }
     }
@@ -452,14 +593,14 @@ public class ProblemSolving {
      * [] -> true
      */
     public static boolean isSorted(int[] numbers) {
-        int i=0;
-        if(numbers.length < 2){
+        int i = 0;
+        if (numbers.length < 2) {
             return true;
         }
 
-        while (numbers[i] <= numbers[i+1]){
+        while (numbers[i] <= numbers[i + 1]) {
             i++;
-            if (i == numbers.length-1){
+            if (i == numbers.length - 1) {
                 return true;
             }
         }
@@ -516,9 +657,9 @@ public class ProblemSolving {
      */
     public static int countOccurrences(int[] numbers, int target) {
         int counter = 0;
-        for(int i=0;i<numbers.length;i++){
-            if(numbers[i] == target){
-                counter ++;
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == target) {
+                counter++;
             }
         }
         return counter;
