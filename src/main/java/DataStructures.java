@@ -13,15 +13,15 @@ import java.util.Set;
 
 public class DataStructures {
     public static void invokeDS() {
-        arrayInit();
-        stringInit();
-        hashMapInit();
-        hashSetInit();
-        linkedListInit();
-        stackInit();
-        queueInit();
-        heapInit();
-        binarySearchInit();
+//        arrayInit();
+//        stringInit();
+//        hashMapInit();
+//        hashSetInit();
+//        linkedListInit();
+//        stackInit();
+//        queueInit();
+//        heapInit();
+//        binarySearchInit();
         treeInit();
         graphInit();
         trieInit();

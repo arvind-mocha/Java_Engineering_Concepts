@@ -2,8 +2,9 @@ import java.util.concurrent.ExecutionException;
 
 public class Main {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        System.out.println("\n=== Data Structures ===");
-        DataStructures.invokeDS();
+        ProblemSolving.invokeProblems();
+//        System.out.println("\n=== Data Structures ===");
+//        DataStructures.invokeDS();
 
 //        System.out.println("\n=== Inheritance ===");
 //        Oops.Inheritance();
